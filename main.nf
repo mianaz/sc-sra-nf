@@ -7,7 +7,7 @@ params.help = false
 include { PRECHECK; CLEAN_TABLE; VALIDATE_SAMPLE; RENAME_VALIDATE; PUBLISH_RESULTS; AGGREGATE_SUMMARY } from './modules/utils'
 include { DETECT_DATA_FORMAT; DETECT_CHEMISTRY } from './modules/detection'
 include { DOWNLOAD_FASTQ_DIRECT } from './modules/download'
-include { CELLRANGER_COUNT; STARSOLO_COUNT_AUTO } from './modules/quantify'
+include { CELLRANGER_COUNT } from './modules/quantify'
 include { VELOCYTO; FINALIZE_SAMPLE; FINALIZE_SAMPLE_WITH_VELOCYTO } from './modules/postprocess'
 
 // Import workflows
@@ -65,37 +65,15 @@ workflow {
     // Rename and validate all FASTQs
     def renamed = RENAME_VALIDATE(all_fastqs, bin_ch)
 
-    // Detect chemistry for each sample
+    // Detect chemistry for each sample (for documentation/validation)
     def chemistry_detected = DETECT_CHEMISTRY(renamed.out, bin_ch)
 
-    // Branch based on detected chemistry
-    def chemistry_branched = chemistry_detected.out.branch { sample, fq_dir, chemistry_json ->
-        def json = new groovy.json.JsonSlurper().parse(chemistry_json)
-        def quantifier = json.quantifier
-        def chemistry = json.chemistry
-
-        cellranger: quantifier == 'cellranger' && json.confidence == 'high'
-            return tuple(sample, fq_dir)
-        starsolo: quantifier == 'starsolo' || json.confidence != 'high'
-            return tuple(sample, fq_dir, chemistry_json)
-    }
-
-    // Process with appropriate quantifier
-    def cellranger_results = Channel.empty()
-    def starsolo_results = Channel.empty()
-
-    // Run CellRanger for 10x samples
-    if (params.cellranger_ref != null) {
-        cellranger_results = CELLRANGER_COUNT(chemistry_branched.cellranger)
-    }
-
-    // Run STARsolo for non-10x samples
-    if (params.star_index != null) {
-        starsolo_results = STARSOLO_COUNT_AUTO(chemistry_branched.starsolo)
-    }
-
-    // Merge quantification results
-    def counted = cellranger_results.mix(starsolo_results)
+    // Run CellRanger on all samples
+    def counted = CELLRANGER_COUNT(
+        chemistry_detected.out.map { sample, fq_dir, chemistry_json ->
+            tuple(sample, fq_dir)
+        }
+    )
 
     // Optional Velocyto processing (only for samples with BAM files)
     def with_velocyto = Channel.empty()
