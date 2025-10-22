@@ -203,12 +203,22 @@ def process_run_list(runs_file: str, output_file: str, sample_id: str):
             print(f"  {sra_id}: {format_info['format']} via {format_info['method']}", file=sys.stderr)
 
     # Determine overall strategy for the sample
-    formats = [r['format'] for r in results.values()]
-    if all(f == 'FASTQ' for f in formats):
+    # Check if formats actually have valid URLs (not just empty or N/A)
+    formats_with_urls = []
+    for r in results.values():
+        if r['format'] in ['FASTQ', 'BAM'] and r.get('urls') and any(url and url != 'N/A' for url in r['urls']):
+            formats_with_urls.append(r['format'])
+        elif r['format'] == 'SRA':
+            formats_with_urls.append('SRA')
+
+    # If no valid URLs found for FASTQ/BAM, treat as SRA
+    if not formats_with_urls or all(f == 'SRA' for f in formats_with_urls):
+        overall_strategy = 'SRA_TOOLS'
+    elif all(f == 'FASTQ' for f in formats_with_urls):
         overall_strategy = 'FASTQ_DIRECT'
-    elif all(f == 'BAM' for f in formats):
+    elif all(f == 'BAM' for f in formats_with_urls):
         overall_strategy = 'BAM_DIRECT'
-    elif 'FASTQ' in formats or 'BAM' in formats:
+    elif 'FASTQ' in formats_with_urls or 'BAM' in formats_with_urls:
         overall_strategy = 'MIXED'
     else:
         overall_strategy = 'SRA_TOOLS'

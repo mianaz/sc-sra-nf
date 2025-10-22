@@ -68,6 +68,16 @@ process DOWNLOAD_BAMS {
         fi
       fi
     done
+
+    # Check if any BAM files were actually downloaded
+    bam_count=\$(find bams -name "*.bam" -type f 2>/dev/null | wc -l)
+    if [[ \$bam_count -eq 0 ]]; then
+      echo "ERROR: No BAM files were downloaded. All URLs were N/A or invalid." >&2
+      echo "This sample should use SRA Tools instead of direct BAM download." >&2
+      exit 1
+    fi
+
+    echo "Successfully downloaded \$bam_count BAM file(s)" >&2
     """
 }
 

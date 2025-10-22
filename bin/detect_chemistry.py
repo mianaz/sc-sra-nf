@@ -262,13 +262,9 @@ def main():
         f.write("Sample\tPlatform\tChemistry\tQuantifier\tConfidence\n")
         f.write(f"{sample_name}\t{result['platform']}\t{result['chemistry']}\t{result['quantifier']}\t{result['confidence']}\n")
 
-    # Return exit code based on detection confidence
-    if result['quantifier'] == 'cellranger' and result['confidence'] == 'high':
-        sys.exit(0)  # Standard 10x detected
-    elif result['quantifier'] == 'starsolo':
-        sys.exit(2)  # Non-10x, use STARsolo
-    else:
-        sys.exit(1)  # Unknown/error
+    # Always exit 0 - routing is handled via JSON output
+    # The quantifier field in JSON determines which tool to use
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()

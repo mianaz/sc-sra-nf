@@ -90,10 +90,11 @@ process DOWNLOAD_RUNS {
 
       # Convert SRA to FASTQ
       echo "  Converting \$SRR to FASTQ" >&2
-      fasterq-dump --threads ${params.download_threads} --split-files --include-technical -O downloads "downloads/\$SRR.sra"
+      mkdir -p "downloads/\$SRR"
+      fasterq-dump --threads ${params.download_threads} --split-files --include-technical -O "downloads/\$SRR" "downloads/\$SRR.sra"
 
       # Compress FASTQ files
-      for fq in downloads/\${SRR}_*.fastq; do
+      for fq in downloads/\${SRR}/*.fastq; do
         [[ -f "\$fq" ]] || continue
         gzip -f "\$fq"
       done
