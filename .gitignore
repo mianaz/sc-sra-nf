@@ -1,0 +1,62 @@
+# Nextflow
+.nextflow*
+work/
+results/
+results_*
+.nextflow.log*
+trace.txt
+report.html
+timeline.html
+logs/
+
+# Test data and outputs
+test_bam_pipeline/
+test_*
+*.bam
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+
+# Reference genomes
+refdata-*
+*.tar.gz
+
+# SRA data
+sra/
+ncbi/
+*.sra
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.log
+*.out
+*.err
+
+# Container builds
+*.sif
+*.img
+
+# Development notes
+CLAUDE.md
+.claude/
