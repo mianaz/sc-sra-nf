@@ -17,14 +17,18 @@ Automated Nextflow pipeline for processing single-cell RNA-seq data from NCBI SR
 
 ```bash
 # Clone repository
-git clone https://github.com/yourusername/sc-sra-nf.git
+git clone https://github.com/mianaz/sc-sra-nf.git
 cd sc-sra-nf
 
-# Download test dataset from GEO
-# Visit: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE117403
-# Click "SRA Run Selector" → Download "Accession List"
+# Quick test with included test dataset (1k PBMCs, ~15-45 min)
+cd test
+./run_test.sh /path/to/star_index
 
-# Run pipeline
+# Or download your own dataset from GEO
+# Visit: https://www.ncbi.nlm.nih.gov/geo/
+# Search for your study → "SRA Run Selector" → Download "Metadata"
+
+# Run pipeline on your data
 nextflow run main.nf \
   --sra_table SraRunTable.csv \
   --star_index /path/to/star_index \
