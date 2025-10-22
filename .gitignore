@@ -12,6 +12,7 @@ logs/
 # Test data and outputs
 test_bam_pipeline/
 test_*
+!config/test_docker.config
 *.bam
 *.fastq
 *.fastq.gz
@@ -21,6 +22,9 @@ test_*
 # Reference genomes
 refdata-*
 *.tar.gz
+
+# Large resources (distributed via releases)
+resources/whitelists/
 
 # SRA data
 sra/
