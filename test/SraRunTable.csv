@@ -1,2 +1,0 @@
-BioSample,Experiment,Sample Name,source_name,organism,Library Name,Platform,Instrument,spots,bases,spots_with_mates,avgLength,size_MB,AssemblyName,download_path,Run,BioProject,Cell_type,tissue
-SAMN10492201,SRX5049767,GSM3490286,1k PBMCs from a Healthy Donor,Homo sapiens,GSM3490286,ILLUMINA,Illumina NovaSeq 6000,8943916,1355032116,8943916,151,544,,https://sra-downloadb.be-md.ncbi.nlm.nih.gov/sos2/sra-pub-run-11/SRR8206317/SRR8206317.1,SRR8206317,PRJNA515520,PBMC,peripheral blood
